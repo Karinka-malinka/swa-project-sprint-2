@@ -1,0 +1,67 @@
+@startuml Monolit
+!include <C4/C4_Container>
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/go.puml
+!include DEVICONS/postgresql.puml
+!include FONTAWESOME/users.puml
+
+title Кинобездна - Containers Diagram
+
+Person(user, "Пользователь", "Пользователь, использующий сервис", $sprite="users")
+
+Boundary(cinemaabyss, "Кинобездна System", "Онлайн-кинотеатр — агрегатор") {
+
+    Container(mobileApplication, "Mobile Application", "Kotlin, Swift", "Обрабатывает взаимодействие с пользователем")
+
+    Container(webApplication, "Web Application", "java, Spring",  "Обрабатывает взаимодействие с пользователем")
+
+    Container(apiGateway, "ApiGateway", "go",  "Маршрутизирует запросы между сервисами")
+
+    Container(users, "Users Service", "go",  "Производит регистрацию, аутентификацию и авторизацию пользователей, управление данными аккаунта")
+
+    Container(payments, "Payments Service", "go", "Предоставляет функционал для оплаты через сторонние банковские сервисы")
+    
+    Container(subscription, "Subscription Service", "go", "Предоставляет функционал по управлению подписками")
+
+    Container(movies, "Movies Service", "go",  "Обрабатывает всю функциональность, связанную с фильмами")
+
+    Container(kafka, "Events Service", "Kafka", "Предоставляет функционал для передачи событий и сообщений")
+
+    ContainerDb(db, "База данных", "PostgreSQL", "Хранит данные о пользователях, устройствах (состоянии, производительности) и сценариях автоматизации", $sprite="postgresql")
+}
+
+System_Ext(recom, "Рекомендательная система", "Внешняя рекомендательная система")
+System_Ext(paymentsSys, "Платежная система", "Внешняя платежная система")
+System_Ext(s3, "S3", "Внешнее хранилище данных")
+System_Ext(onlineCinema, "Онлайн кинотеарт", "Онлайн кинотеарт")
+
+Rel(user, webApplication, "Использует")
+Rel(user, mobileApplication, "Использует")
+
+Rel(webApplication, apiGateway, "Формирирует запрос", "REST API (json)")
+Rel(mobileApplication, apiGateway, "Формирирует запрос", "REST API (json)")
+
+Rel(apiGateway, users, "Регистрирует пользователя, получает JWT и настройки профиля", "REST API (json, jwt)")
+Rel(apiGateway, subscription, "Оформляет подписку", "REST API (json)")
+Rel(apiGateway, payments, "Обрабатывает запрос на оплату", "REST API (json)")
+Rel(apiGateway, movies, "Просмотр фильмов и их метаданных", "REST API (json)")
+
+Rel(users, kafka, "Публикует события регистрации и входа в сервис", "json")
+Rel(movies, kafka, "Читает события регистрации и входа в сервис", "json")
+Rel(movies, kafka, "Публикует/Читает события фильмов (просмотр, оценка, добавление)", "json")
+
+Rel(subscription, kafka, "Публикует сообщение о новой подписке, читает события об оплате", "json")
+Rel(payments, kafka, "Читает сообщения о новой подписке, публикует событие об оплате", "json")
+
+Rel(movies, s3, "Стримминг фильмов", "REST API (json)")
+Rel(movies, onlineCinema, "Стримминг фильмов, получить данные о фильме", "REST API (json)")
+Rel(movies, recom, "Получить рейтинг и рекомендации", "REST API (json)")
+Rel(payments, paymentsSys, "Выполняет процесс оплаты")
+
+Rel(users, db, "Читает/Записывает", "SQL")
+Rel(movies, db, "Читает/Записывает", "SQL")
+Rel(subscription, db, "Читает/Записывает", "SQL")
+
+@enduml
