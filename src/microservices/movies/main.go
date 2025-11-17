@@ -38,7 +38,7 @@ func main() {
 		port = "8081" // Note: Using a different port than the monolith
 	}
 	log.Printf("Starting movies microservice on port %s", port)
-	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func initDB() {

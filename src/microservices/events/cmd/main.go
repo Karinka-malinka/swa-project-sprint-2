@@ -99,7 +99,7 @@ func main() {
 	logrus.Infof("Starting events microservice on port %s", port)
 
 	server := &http.Server{
-		Addr: fmt.Sprintf("localhost:%s", cfg.Port),
+		Addr: fmt.Sprintf(":%s", cfg.Port),
 	}
 
 	// Создание анонимной функции для передачи дополнительного параметра
