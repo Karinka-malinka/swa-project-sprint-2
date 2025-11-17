@@ -63,7 +63,7 @@ func main() {
 		port = "8080"
 	}
 	log.Printf("Starting server on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe("localhost:"+port, nil))
 }
 
 func initDB() {

@@ -72,7 +72,7 @@ func Run() {
 	}
 
 	appRouter := router.NewRouter(registerHandlers, cfg)
-	host := fmt.Sprintf(":%s", cfg.Port)
+	host := fmt.Sprintf("localhost:%s", cfg.Port)
 	appServer := server.NewHTTPServer(host, appRouter.Echo)
 
 	logrus.Infof("Starting API Gateway server: %s", host)

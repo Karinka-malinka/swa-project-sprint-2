@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: events-service
-        image: ghcr.io/Karinka-malinka/swa-project-sprint-2/events-service:latest
+        image: ghcr.io/karinka-malinka/swa-project-sprint-2/events-service:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8082
