@@ -27,6 +27,7 @@ func init() {
 	flag.StringVar(&cfg.MoviesServiceURL, "movies-service-URL", "http://localhost:8081", "movies service URL")
 	flag.StringVar(&cfg.EventsServiceURL, "events-service-URL", "http://localhost:8082", "events service URL")
 	flag.BoolVar(&cfg.GradualMigration, "gradual-migration", false, "gradual migration")
+	flag.StringVar(&cfg.MoviesMigrationPercent, "movies-migration-percent", "50", "movies migration percent")
 
 	flag.Parse()
 
@@ -41,6 +42,10 @@ func init() {
 	}
 	if envEventsServiceURL := os.Getenv("EVENTS_SERVICE_URL"); envEventsServiceURL != "" {
 		cfg.EventsServiceURL = envEventsServiceURL
+	}
+
+	if envMoviesMigrationPercent := os.Getenv("MOVIES_MIGRATION_PERCENT"); envMoviesMigrationPercent != "" {
+		cfg.MoviesMigrationPercent = envMoviesMigrationPercent
 	}
 
 	if envGradualMigration := os.Getenv("GRADUAL_MIGRATION"); envGradualMigration != "" {

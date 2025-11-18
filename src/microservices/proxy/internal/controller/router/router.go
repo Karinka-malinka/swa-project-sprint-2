@@ -1,8 +1,10 @@
 package router
 
 import (
+	"math/rand"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
@@ -27,7 +29,7 @@ func NewRouter(handlers []handlers.Handler, cfg config.Config) *Router {
 	router.Echo.Use(middleware.Logger())
 
 	if cfg.GradualMigration {
-		moviesProxy(router.Echo, cfg.MoviesServiceURL)
+		moviesProxy(router.Echo, cfg.MoviesServiceURL, cfg.MonolithURL, cfg.MoviesMigrationPercent)
 		eventsProxy(router.Echo, cfg.EventsServiceURL)
 	}
 
@@ -58,9 +60,17 @@ func monolithProxy(router *echo.Echo, monolithURL string) {
 
 }
 
-func moviesProxy(router *echo.Echo, moviesServiceURL string) {
+func moviesProxy(router *echo.Echo, moviesServiceURL, monolithURL string, migrationPercent string) {
 
-	catchUrl, err := url.Parse(moviesServiceURL)
+	useMoviesService := decideTargetService(migrationPercent)
+
+	targetURL := monolithURL
+
+	if useMoviesService {
+		targetURL = moviesServiceURL
+	}
+
+	catchUrl, err := url.Parse(targetURL)
 	if err != nil {
 		logrus.Fatalf("error in parse url. error: %v", err)
 	}
@@ -88,4 +98,10 @@ func eventsProxy(router *echo.Echo, eventsServiceURL string) {
 			},
 		})))
 
+}
+
+func decideTargetService(migrationPercent string) bool {
+	migrationPercentInt, _ := strconv.Atoi(migrationPercent)
+	randNum := rand.Intn(100)
+	return randNum <= migrationPercentInt
 }
