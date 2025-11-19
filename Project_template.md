@@ -43,6 +43,8 @@ kubectl delete  namespace cinemaabyss
 helm install cinemaabyss src/kubernetes/helm --namespace cinemaabyss --create-namespace
 kubectl -n cinemaabyss get pod
 
+kubectl describe ingress cinemaabyss-ingress -n cinemaabyss
+
 [helm](./tests/scrinshots/helm.png)
 
 # Задание 5
