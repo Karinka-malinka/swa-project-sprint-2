@@ -38,6 +38,11 @@
 
 ## Задание 4
 
+kubectl delete all --all -n cinemaabyss
+kubectl delete  namespace cinemaabyss
+helm install cinemaabyss src/kubernetes/helm --namespace cinemaabyss --create-namespace
+kubectl -n cinemaabyss get pod
+
 [helm](./tests/scrinshots/helm.png)
 
 # Задание 5

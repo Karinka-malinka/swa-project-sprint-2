@@ -47,7 +47,7 @@ monolith:
   service:
     port: 8080
     targetPort: 8080
-    type: ClusterIP
+    type: LoadBalancer
 
 # Proxy service configuration
 proxyService:
@@ -65,9 +65,9 @@ proxyService:
       cpu: 100m
       memory: 128Mi
   service:
-    port: 8000
+    port: 80
     targetPort: 8000
-    type: ClusterIP
+    type: LoadBalancer
 
 # Movies service configuration
 moviesService:
@@ -172,7 +172,15 @@ ingress:
         - path: /
           pathType: Prefix
           service: proxy-service
-          port: 80
+          port: 8000
+        - path: /api
+          pathType: Prefix
+          service: monolith
+          port: 8080
+        - path: /api/movies
+          pathType: Prefix
+          service: movies-service
+          port: 8081
         - path: /api/events
           pathType: Prefix
           service: events-service
